@@ -171,7 +171,9 @@ class HealthPlugin(val activity: Activity, val channel: MethodChannel) : MethodC
 
         /// Start a new thread for doing a GoogleFit data lookup
         thread {
-            val googleSignInAccount = GoogleSignIn.getAccountForExtension(activity.applicationContext, fitnessOptions)
+            try{
+
+                val googleSignInAccount = GoogleSignIn.getAccountForExtension(activity.applicationContext, fitnessOptions)
 
             val response = Fitness.getHistoryClient(activity.applicationContext, googleSignInAccount)
                     .readData(DataReadRequest.Builder()
@@ -193,7 +195,12 @@ class HealthPlugin(val activity: Activity, val channel: MethodChannel) : MethodC
 
             }
             activity.runOnUiThread { result.success(healthData) }
+        } catch (e3: Exception) {
+                Log.e("Exception in gettin data from google: ", e3.toString())
+                activity.runOnUiThread { result.success(null) }
+            }
         }
+
     }
 
     fun callToHealthTypes(call: MethodCall): FitnessOptions {
@@ -208,21 +215,28 @@ class HealthPlugin(val activity: Activity, val channel: MethodChannel) : MethodC
 
     /// Called when the "requestAuthorization" is invoked from Flutter 
     private fun requestAuthorization(call: MethodCall, result: Result) {
-        val optionsToRegister = callToHealthTypes(call)
+    //  val optionsToRegister = callToHealthTypes(call)
+
         mResult = result
 
-        /// Not granted? Ask for permission
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                    activity,
-                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                    GoogleSignIn.getLastSignedInAccount(activity),
-                    optionsToRegister)
+        try{
+            /// Not granted? Ask for permission
+            if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
+                GoogleSignIn.requestPermissions(
+                        activity,
+                        GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                        GoogleSignIn.getLastSignedInAccount(activity),
+                        fitnessOptions)
+            }
+            /// Permission already granted
+            else {
+                mResult?.success(true)
+            }
+        } catch (e3: Exception) {
+            Log.e("Exception in auth from google: ", e3.toString())
+            mResult?.error("exception","error in auth from google",e3)
         }
-        /// Permission already granted
-        else {
-            mResult?.success(true)
-        }
+
     }
 
     /// Handle calls from the MethodChannel
