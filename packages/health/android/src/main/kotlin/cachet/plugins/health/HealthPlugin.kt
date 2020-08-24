@@ -215,7 +215,7 @@ class HealthPlugin(val activity: Activity, val channel: MethodChannel) : MethodC
 
     /// Called when the "requestAuthorization" is invoked from Flutter 
     private fun requestAuthorization(call: MethodCall, result: Result) {
-    //  val optionsToRegister = callToHealthTypes(call)
+        // val optionsToRegister = callToHealthTypes(call)
 
         mResult = result
 

@@ -105,8 +105,21 @@ String _uuid, _deviceId;
 A `HealthData healthData` object can be serialized to JSON with the `healthData.toJson()` method.
 
 
-### Fetch health data for a single data type
+### Request health data types
+You can request types pre-emptively, if you want to which will make sure access is granted before the data is requested.
 
+This step is **not required**.
+
+```dart
+List<HealthDataType> types = [
+    HealthDataType.BODY_MASS_INDEX,
+    HealthDataType.STEPS,
+    HealthDataType.WEIGHT,
+    HealthDataType.ACTIVE_ENERGY_BURNED
+];
+
+bool granted = await health.requestAuthorization(types);
+```
 ### Fetch health data
 
 To fetch data, specify a date-interval and the desired health data types:

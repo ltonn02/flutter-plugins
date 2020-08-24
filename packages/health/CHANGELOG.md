@@ -1,3 +1,6 @@
+## 2.0.3
+* requestAuthorization is now public again.
+
 ## 2.0.2
 * Updated the API to take a list of types rather than a single type, when requesting health data.
 
