@@ -15,7 +15,7 @@ class HealthFactory {
           : _dataTypeKeysIOS.contains(dataType);
 
   /// Request access to GoogleFit/Apple HealthKit
-  Future<bool> _requestAuthorization(List<HealthDataType> types) async {
+  Future<bool> requestAuthorization(List<HealthDataType> types) async {
     /// If BMI is requested, then also ask for weight and height
     if (types.contains(HealthDataType.BODY_MASS_INDEX)) {
       types.add(HealthDataType.WEIGHT);
@@ -65,7 +65,7 @@ class HealthFactory {
     List<HealthDataPoint> dataPoints = [];
     bool granted = await _requestAuthorization(types);
     for (HealthDataType type in types) {
-      bool p = await _requestAuthorization([type]);
+      bool p = await requestAuthorization([type]);
       print('$type, $p');
     }
 
